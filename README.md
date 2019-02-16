@@ -1,2 +1,2 @@
-# AIVA: Sistema de identificación automática de crotales
+# Sistema de identificación automática de crotales
 
