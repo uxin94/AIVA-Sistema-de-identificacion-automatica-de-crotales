@@ -15,42 +15,51 @@ def preproces(imin):
 
 def locnum(A):
 
-    n = random.randint(4,5)  # Se elige aleatoriamente si hay 4 o 5 cifras
-    roi = np.zeros((n, 2))  # Matriz nx4coordenadas
+    n = random.randint(4, 5)  # Se elige aleatoriamente si hay 4 o 5 cifras
+    roi = np.zeros((n, 4))  # Matriz nx4coordenadas (x0,y0, x1, y1) = (coord. sup. izda, coord. inf. dcha.)
     ancho = 85
+    alto = 128
     randomcol = random.randint(0, 10)  # Coordenada columna aleatoria de comienzo
     randomrow = random.randint(200, 510)
-    roi[0,:] = [randomrow, randomcol]  # Coordenada inicial (FILA, COLUMNA)
+    roi[0, :] = [randomrow, randomcol, randomrow+alto, randomcol+ancho]  # Coordenada inicial (FILA, COLUMNA)!!!!!
 
     # Calculo el resto de coordenadas de los rectangulos
-    for i in range(1, n):
-        roi[i, :] = [roi[0, 0], roi[i - 1, 1] + ancho]
+    if n == 5:
+        for i in range(1, 3):
+            roi[i, :] = [roi[i-1, 0], roi[i-1, 1] + ancho + 3, roi[i - 1, 2], roi[i-1, 3] + ancho + 3]
 
-    print(roi)
+        roi[3, :] = [roi[2, 0], roi[2, 1] + 30, roi[2, 2], roi[2, 3] + 30]
+
+        for i in range(4, n):
+            roi[i, :] = [roi[i-1, 0], roi[i-1, 1] + ancho + 3, roi[i - 1, 2], roi[i-1, 3] + ancho + 3]
+    elif n == 4:
+        for i in range(1, n):
+            roi[i, :] = [roi[i - 1, 0], roi[i - 1, 1] + ancho + 10, roi[i - 1, 2], roi[i - 1, 3] + ancho + 10]
+
+    #print(roi)
     roi = roi.astype(int)
 
     #  Dibujo los rectangulos
-    for x2, x1 in roi:
-        cv2.rectangle(A, (x1, x2), (x1 + 75, x2 + 130), (0, 255, 0), 2)  # Para dibujar es al revés (COLUMNA, FILA)
+    for x2, x1, x4, x3 in roi:
+        cv2.rectangle(A, (x1, x2), (x3, x4), (0, 255, 0), 2)  # Para dibujar es al revés (COLUMNA, FILA)
 
-    cv2.imshow('im', A)
-    cv2.waitKey()
+    #cv2.imshow('im', A)
+    #cv2.waitKey()
 
-    return roi
+    return roi, A
 
 
 # ----Lee numeros----
 
-def readnum(imin, roi):
+def readnum(s):
 
     # Generamos 4 o 5 numeros aleatorios de manera que:
     # entre 0 y 10 = 1, entre 11 y 20 = 2... etc
 
-    s, _ = roi.shape
     numeros = np.zeros(s)
 
     for i in range(s):
-        num = random.randint(0,100)
+        num = random.randint(0, 100)
         if num < 11:
             numeros[i] = 0
         elif 11 <= num < 21:
@@ -72,7 +81,7 @@ def readnum(imin, roi):
         else:
             numeros[i] = 9
 
-    return numeros
+    return numeros.astype(int)
 
 # ----Almacena numeros----
 
