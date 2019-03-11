@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-import imutils
 import pytesseract
-
+from PIL import Image
+from imutils import contours
 
 def recognize(im):
     imC = preprocess(im)
@@ -32,7 +32,8 @@ def preprocess(img):
 def locnum(img):
     digit = []
 
-    im, cont, hier = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    im, contf, hier = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cont = contours.sort_contours(contf, method = 'left-to-right')[0]
 
     for i in cont:
 
@@ -51,15 +52,18 @@ def locnum(img):
     return digit
 
 def readnum(digit, img):
-    numeros = np.array([])
+
+    numeros = []
+    a=0
+
     for i in digit:
         x = i[0]
         x2 = i[1]
         y = i[2]
         y2 = i[3]
-        imagen = img[x:x2, y:y2]
-        #config = ('-l eng --oem 1 --psm 7')
-        numeros [i] = image_to_data(imagen, config='')
-
+        imagen = img[y:y2, x:x2]
+        a+=1
+        config = ('-l eng --oem 1 --psm 7')
+        numeros.append(pytesseract.image_to_string(Image.fromarray(imagen), config=config))
 
     return numeros
