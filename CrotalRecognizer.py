@@ -1,6 +1,12 @@
 import cv2
-import recognize
+from recognize import recognize
 
-path = '/Users/andrea/Desktop/MASTER/SEGUNDO CUATRI/APLICACIONES/Proyecto crotales'
-im = cv2.imread(path+'/0002.TIF')
-num = recognize(im)
+
+path = 'C:\\Users\\mary\\Desktop\\MOVA\\CuatrimestreII\\Aplicaciones industriales\\Practica\\TestSamples'
+im = cv2.imread(path+'\\0382.TIF')
+
+bbox = recognize(im)
+
+print(bbox)
+
+
