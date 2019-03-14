@@ -1,43 +1,30 @@
 import unittest
 from unittest import TestCase
-from Crotales.mock_up import locnum
+from recognize import Recognizer
 from roi import roi
-import numpy as np
 import cv2
 
+# Test que comprueba que las coordenadas del bounding box obtenidas por el algoritmo están
+# dentro de un rango de +- 12 pixeles respecto las coordenadas obtenidas manualmente
 
-class TestPreprocesado(TestCase):
+class TestSegmentacion(TestCase):
 
-    def test_segmentacionok(self): #Comprobamos que hay elementos verdes en la imagen (los rectangulos)
+    def test_segmentacionok(self):
 
-        A = cv2.imread('/Users/andrea/Desktop/MASTER/SEGUNDO CUATRI/APLICACIONES/Proyecto crotales/Crotal1.TIF')
-        roi0, _ = locnum(A)
+        A = cv2.imread('/Users/andrea/Desktop/MASTER/SEGUNDO CUATRI/APLICACIONES/Proyecto crotales/im_Test_seg.png')
+        gris = cv2.cvtColor(A, cv2.COLOR_BGR2GRAY)
+        r = Recognizer()
+        roi0 = r._locnum(gris)  # Obtengo la roi de la imagen (coordenadas (x1, x2, y1, y2))
 
-        roi1 = roi(271, 118, 397, 203)  # Primer rectangulo
-        roi2 = roi(271, 218, 397, 302)
-        roi3 = roi(271, 316, 397, 402)
-        roi4 = roi(271, 416, 397, 502)
+        roi1 = roi(120, 483, 303, 461)  # Coordenadas reales medidas de la imagen de test
 
-        self.assertIn(roi0[0, 0], range(roi1.y0 - 10, roi1.y0 + 10))
-        self.assertIn(roi0[0, 1], range(roi1.x0 - 10, roi1.x0 + 10))
-        self.assertIn(roi0[0, 2], range(roi1.y1 - 10, roi1.y1 + 10))
-        self.assertIn(roi0[0, 3], range(roi1.x1 - 10, roi1.x1 + 10))
+        print('Coordenadas manuales: [{}. {}, {}, {}]'.format(roi0[0], roi0[1], roi0[2], roi0[3]))
+        print('Coordenadas calculadas por el algoritmo: [{}. {}, {}, {}]'.format(roi1.x0, roi1.x1, roi1.y0, roi1.y1))
 
-        self.assertIn(roi0[1, 0], range(roi2.y0 - 10, roi2.y0 + 10))
-        self.assertIn(roi0[1, 1], range(roi2.x0 - 10, roi2.x0 + 10))
-        self.assertIn(roi0[1, 2], range(roi2.y1 - 10, roi2.y1 + 10))
-        self.assertIn(roi0[1, 3], range(roi2.x1 - 10, roi2.x1 + 10))
-
-        self.assertIn(roi0[2, 0], range(roi3.y0 - 10, roi3.y0 + 10))
-        self.assertIn(roi0[2, 1], range(roi3.x0 - 10, roi3.x0 + 10))
-        self.assertIn(roi0[2, 2], range(roi3.y1 - 10, roi3.y1 + 10))
-        self.assertIn(roi0[2, 3], range(roi3.x1 - 10, roi3.x1 + 10))
-
-        self.assertIn(roi0[3, 0], range(roi4.y0 - 10, roi4.y0 + 10))
-        self.assertIn(roi0[3, 1], range(roi4.x0 - 10, roi4.x0 + 10))
-        self.assertIn(roi0[3, 2], range(roi4.y1 - 10, roi4.y1 + 10))
-        self.assertIn(roi0[3, 3], range(roi4.x1 - 10, roi4.x1 + 10))
-
+        self.assertIn(roi0[0], range(roi1.x0 - 12, roi1.x0 + 12))
+        self.assertIn(roi0[1], range(roi1.x1 - 12, roi1.x1 + 12))
+        self.assertIn(roi0[2], range(roi1.y0 - 12, roi1.y0 + 12))
+        self.assertIn(roi0[3], range(roi1.y1 - 12, roi1.y1 + 12))
 
 
 if __name__ == '__main__':

@@ -1,19 +1,35 @@
 import unittest
 from unittest import TestCase
-from Crotales.mock_up import preproces
+from recognize import Recognizer
 import numpy as np
 import cv2
+
+# Test que comprueba que la imagen preprocesada manualmente y la preprocesada por el algoritmo
+# difieren en menos de un 15% de pixeles.
 
 class TestPreprocesado(TestCase):
 
     def test_im_preprocesada(self):
 
+        # Leemos las imagenes
         path = '/Users/andrea/Desktop/MASTER/SEGUNDO CUATRI/APLICACIONES/Proyecto crotales'
-        imprec = cv2.imread(path+'/0002_proc.TIF')  # Leo la imagen procesada ok
-        imin = cv2.imread(path+'/0002_proc.TIF')  # Leo la imagen original
-        imout = preproces(imin)  # Proceso la imagen original
-        dif = np.sum(abs(imout-imprec))  # La imagen procesada debe ser lo mas parecida a la procesada ok
-        self.assertIn(dif, range(20))  # Comprobamos que las imagenes sean parecidas
+        imprec1 = cv2.imread(path+'/im_test_precok.TIF')  # Imagen procesada manualmente
+        imprec = cv2.cvtColor(imprec1, cv2.COLOR_BGR2GRAY)
+        imin = cv2.imread(path+'/im_Test_seg.png')  # Imagen original
+
+        # Proceso la imagen original
+        r = Recognizer()
+        imout = r._preprocess(imin)
+        #cv2.imshow('im', imout)
+        #cv2.waitKey(0)
+
+        # Obtengo la diferencia de pixeles entre las dos imagenes
+        [f, c] = np.shape(imprec)
+        pxs = f * c
+        dif = np.count_nonzero(imprec-imout)  # Miramos los pixeles que son diferentes entre las dos imagenes
+        porc = int((dif * 100) / pxs)  # Obtenemos el porcentaje de pixeles diferentes
+        print(porc)
+        self.assertIn(porc, range(15))  # Comprobamos que las imagenes sean parecidas
 
 
 if __name__ == '__main__':

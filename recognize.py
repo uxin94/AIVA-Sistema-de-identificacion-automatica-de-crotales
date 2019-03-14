@@ -6,11 +6,11 @@ from imutils import contours
 
 class Recognizer:
 
-    def recognize(self, im):
+    def recognize(self, imagen):
 
-        imC = self._preprocess(im)
-        bbox = self._locnum(imC)
-        numeros = self._readnum(bbox, imC)
+        imC = self._preprocess(imagen)
+        roi = self._locnum(imC)
+        numeros = self._readnum(roi, imC)
 
         return numeros
 
@@ -39,8 +39,8 @@ class Recognizer:
         dil = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel2)
         op = cv2.morphologyEx(dil, cv2.MORPH_ERODE, kernel1)
 
-        cv2.imshow('im', op)
-        cv2.waitKey(0)
+        #cv2.imshow('im', op)
+        #cv2.waitKey(0)
 
         return op
 
@@ -49,7 +49,7 @@ class Recognizer:
         digit = []
 
         im, contf, hier = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        cont = contours.sort_contours(contf, method = 'left-to-right')[0]
+        cont = contours.sort_contours(contf, method='left-to-right')[0]
 
         for i in cont:
 
@@ -60,35 +60,29 @@ class Recognizer:
 
         digit = np.asarray(digit)
         resta = digit[0, 2] - digit[-1, 2]
-        if resta < 0: # Inclinada hacia abajo derecha
+        if resta < 0:  # Inclinada hacia abajo derecha
             y1 = digit[0, 2]
             y2 = digit[-1, 3]
             x1 = digit[0, 0]
             x2 = digit[-1, 1]
 
         else:  # Inclinada hacia arriba (izquierda)
-            y1 = digit[-1, 2] #FILA
+            y1 = digit[-1, 2]  # FILA
             y2 = digit[0, 3]
-            x1 = digit[0, 0]#COLUMNA
+            x1 = digit[0, 0]  # COLUMNA
             x2 = digit[-1, 1]
 
-        imagen = img[y1:y2, x1:x2]
-        cv2.imshow('imagen_recortada', imagen)
-        cv2.waitKey(0)
+        roi = [x1, x2, y1, y2]
 
-        return digit
+        return roi
 
-    def _readnum(self, digit, img):  # Lee los numeros
+    def _readnum(self, roi, im):  # Lee los numeros
 
-        numeros = []
+        imagen = im[roi[2]:roi[3], roi[0]:roi[1]]
+        #cv2.imshow('imagen_recortada', imagen)
+        #cv2.waitKey(0)
 
-        for i in digit:
-            x = i[0]
-            x2 = i[1]
-            y = i[2]
-            y2 = i[3]
-            imagen = img[y:y2, x:x2] #(COLUMNA, FILA)
-            config = '--psm 10 -c tessedit_char_whitelist=.0123456789'
-            numeros.append(pytesseract.image_to_string(Image.fromarray(imagen), config=config))
+        config = '--psm 8 -c tessedit_char_whitelist=0123456789'
+        numeros = (pytesseract.image_to_string(Image.fromarray(imagen), config=config))
 
         return numeros
