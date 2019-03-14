@@ -28,22 +28,21 @@ class Recognizer:
         compactness, labels, centers = cv2.kmeans(z, 3, None, criteria, 10, flags)
         #print(centers)
         thresh1 = np.logical_and(gris >= centers[1]-30, gris <= centers[1]+30)
-        thresh = np.array(thresh1 * 1 * 255)
-        cv2.imshow('umbral', thresh)
-        cv2.waitKey(0)
+        thresh = np.array(thresh1 * 1 * 255, dtype=np.uint8)
+        #cv2.imshow('umbral', thresh)
+        #cv2.waitKey(0)
 
         kernel1 = np.ones((5, 5), np.uint8)
         kernel2 = np.ones((3, 3), np.uint8)
 
-        dil = thresh
-       # dil = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel2)
+        #dil = thresh
+        dil = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel2)
+        op = cv2.morphologyEx(dil, cv2.MORPH_ERODE, kernel1)
 
-        #op = cv2.morphologyEx(dil, cv2.MORPH_ERODE, kernel1)
+        cv2.imshow('im', op)
+        cv2.waitKey(0)
 
-        #cv2.imshow('im', op)
-        #cv2.waitKey(0)
-
-        return dil
+        return op
 
     def _locnum(self, img):  # Encuentra los numeros
 
@@ -74,8 +73,8 @@ class Recognizer:
             x2 = digit[-1, 1]
 
         imagen = img[y1:y2, x1:x2]
-        #cv2.imshow('imagen_recortada', imagen)
-        #cv2.waitKey(0)
+        cv2.imshow('imagen_recortada', imagen)
+        cv2.waitKey(0)
 
         return digit
 
