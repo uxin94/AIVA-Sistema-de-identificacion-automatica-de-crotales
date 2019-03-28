@@ -3,6 +3,7 @@ import numpy as np
 import pytesseract
 from PIL import Image
 from imutils import contours
+import matplotlib.pyplot as plt
 
 class Recognizer:
 
@@ -17,30 +18,21 @@ class Recognizer:
     def _preprocess(self, img):  # Preprocesa la imagen
 
         gris = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        [f, c] = np.shape(gris)
 
-        #_, thresh = cv2.threshold(gris, 50, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        hist = plt.hist(gris.flatten(), bins='auto')
+        # Obtenemos el primer minimo del histograma, el limite inferior del umbral
+        minimo = hist[0][0:15].argmin() + 1
+        pos = hist[1][int(minimo)]
 
-        z1 = gris.reshape((f*c, 1))
-        z = np.float32(z1)
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-        flags = cv2.KMEANS_RANDOM_CENTERS
-        compactness, labels, centers = cv2.kmeans(z, 3, None, criteria, 10, flags)
-        #print(centers)
-        thresh1 = np.logical_and(gris >= centers[1]-30, gris <= centers[1]+30)
-        thresh = np.array(thresh1 * 1 * 255, dtype=np.uint8)
-        #cv2.imshow('umbral', thresh)
-        #cv2.waitKey(0)
+        # Umbralizamos la imagen desde la posicion anterior a +60
+        thresh1 = np.logical_and(gris >= pos, gris <= pos + 60)
+        thresh = np.array(thresh1 * 255, dtype=np.uint8)
 
+        # Erosion + cierre
         kernel1 = np.ones((5, 5), np.uint8)
         kernel2 = np.ones((3, 3), np.uint8)
-
-        #dil = thresh
         dil = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel2)
         op = cv2.morphologyEx(dil, cv2.MORPH_ERODE, kernel1)
-
-        #cv2.imshow('im', op)
-        #cv2.waitKey(0)
 
         return op
 
@@ -79,8 +71,6 @@ class Recognizer:
     def _readnum(self, roi, im):  # Lee los numeros
 
         imagen = im[roi[2]:roi[3], roi[0]:roi[1]]
-        #cv2.imshow('imagen_recortada', imagen)
-        #cv2.waitKey(0)
 
         config = '--psm 8 -c tessedit_char_whitelist=0123456789'
         numeros = (pytesseract.image_to_string(Image.fromarray(imagen), config=config))
