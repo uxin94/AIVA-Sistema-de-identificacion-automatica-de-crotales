@@ -44,5 +44,4 @@ Para ello, se ha de seguir los siguientes pasos:
 - Es necesaria la instalación de Python 3.7 y de OpenCV 3.4.5.20 (pip install opencv-
 contrib-python).
 - Descagar el archivo Cliente.py.
-- Desde terminal ejecutar el siguiente comando: python3 Cliente.py --image_path='path a la imagen/imagen.TIF'
-- Siendo image_path la ruta de la imagen que se quiere analizar.
+- Desde terminal ejecutar el siguiente comando: python3 Cliente.py --image_path='path a la imagen/imagen.TIF'. Siendo image_path la ruta de la imagen que se quiere analizar.
