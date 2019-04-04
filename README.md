@@ -34,3 +34,14 @@ Por otra parte, para probar el funcionamiento del algoritmo se han desarrollado 
 - Localizador de números: $ python3 test_segmentacion.py 
 
 - Identificador de números: $ python3 test_numeros.py
+
+
+# Despliegue de la aplicación cliente/servidor
+
+Como la aplicación móvil aún no se ha desarrollado, es necesario ejecutar el código del cliente en sí. 
+Para ello, se ha de seguir los siguientes pasos:
+
+- Es necesaria la instalación de Python 3.7 y de OpenCV 3.4.5.20 (pip install opencv-
+contrib-python).
+- Descagar el archivo Cliente.py.
+- Desde terminal ejecutar el siguiente comando: python3 Cliente.py --image_path='path a la imagen/imagen.TIF'. Siendo image_path la ruta de la imagen que se quiere analizar.
