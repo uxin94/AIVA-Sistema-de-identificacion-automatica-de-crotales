@@ -75,7 +75,7 @@ class Recognizer:
         config = '--psm 8 --oem 0 -c tessedit_char_whitelist=0123456789'
         numeros = pytesseract.image_to_string(Image.fromarray(imagen), config=config)
         numeros2 = []
-        i=0
+        i = 0
 
         for cifra in numeros:
 
@@ -121,6 +121,6 @@ class Recognizer:
                 numeros2.append('7')
             else:
                 numeros2.append(cifra)
-            i+=1
+            i += 1
 
         return numeros2
