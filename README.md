@@ -39,14 +39,10 @@ Por otra parte, para probar el funcionamiento del algoritmo se han desarrollado 
 # Despliegue de la aplicación cliente/servidor
 
 Como la aplicación móvil aún no se ha desarrollado, es necesario ejecutar el código del cliente en sí. 
-Para ello, se debe disponer de un entorno de desarrollo, como PyCharm, que permita modificar el archivo y ejecutarlo.
-Los pasos a seguir son:
+Para ello, se ha de seguir los siguientes pasos:
 
 - Es necesaria la instalación de Python 3.7 y de OpenCV 3.4.5.20 (pip install opencv-
 contrib-python).
-- Descagar el archivo Cliente.py del enlace a GitHub que se adjunta a continuación.
-- Abrir el archivo en el entorno de desarrollo.
-- Cambiar la línea 6 por la dirección del path correspondiente (carpeta en la que se
-encuentra la imagen).
-- Cambiar la línea 7 por el nombre de la imagen a analizar.
-- Ejecutar el archivo.
+- Descagar el archivo Cliente.py.
+- Desde terminal ejecutar el siguiente comando: python3 Cliente.py --image_path='path a la imagen/imagen.TIF'
+- Siendo image_path la ruta de la imagen que se quiere analizar.
