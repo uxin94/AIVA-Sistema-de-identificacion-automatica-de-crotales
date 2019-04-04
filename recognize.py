@@ -72,7 +72,55 @@ class Recognizer:
 
         imagen = im[roi[2]:roi[3], roi[0]:roi[1]]
 
-        config = '--psm 8 -c tessedit_char_whitelist=0123456789'
-        numeros = (pytesseract.image_to_string(Image.fromarray(imagen), config=config))
+        config = '--psm 8 --oem 0 -c tessedit_char_whitelist=0123456789'
+        numeros = pytesseract.image_to_string(Image.fromarray(imagen), config=config)
+        numeros2 = []
+        i=0
 
-        return numeros
+        for cifra in numeros:
+
+            if cifra == ' ':
+                continue
+            elif cifra == 'A':
+                numeros2.append('4')
+            elif cifra == 'B':
+                numeros2.append('8')
+            elif cifra == 'C':
+                numeros2.append('0')
+            elif cifra == 'D':
+                numeros2.append('0')
+            elif cifra == 'E':
+                numeros2.append('7')
+            elif cifra == 'F':
+                numeros2.append('7')
+            elif cifra == 'G':
+                numeros2.append('6')
+            elif cifra == 'H':
+                numeros2.append('4')
+            elif cifra == 'I':
+                numeros2.append('7')
+            elif cifra == 'J':
+                numeros2.append('6')
+            elif cifra == 'O':
+                numeros2.append('0')
+            elif cifra == 'Q':
+                numeros2.append('0')
+            elif cifra == 'S':
+                numeros2.append('5')
+            elif cifra == 'T':
+                numeros2.append('1')
+            elif cifra == 'U':
+                numeros2.append('0')
+            elif cifra == 'Y':
+                numeros2.append('9')
+            elif cifra == 'Z':
+                numeros2.append('5')
+            elif cifra == 'o':
+                numeros2.append('0')
+            elif cifra == '/':
+                numeros2.append('7')
+            else:
+                numeros2.append(cifra)
+            i+=1
+
+        return numeros2
